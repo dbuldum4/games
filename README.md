@@ -4,6 +4,7 @@ Small daily games, served at [denizbuldum.org/games](https://denizbuldum.org/gam
 
 - [Plates](https://denizbuldum.org/games/plates/): make a word from the license plate. Use its three letters in order; rarer words drive farther.
 - [Halfway](https://denizbuldum.org/games/halfway/): name the city halfway between two others along the shortest flight route.
+- [Brim](https://denizbuldum.org/games/brim/): fill the glass with countries by land area without spilling.
 
 Each game is a single self-contained `index.html` with its data inlined, so there is no build step to host it. Puzzles rotate daily at midnight US Eastern, and progress is kept in the browser's localStorage.
 
