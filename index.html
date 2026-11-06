@@ -32,11 +32,13 @@
   --line-strong: rgba(31, 27, 23, 0.26);
   --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", serif;
   --sans: "Instrument Sans", "Avenir Next", "Segoe UI", sans-serif;
+  --track: rgba(31, 27, 23, 0.18);
+  --track-on: #765640;
   /* layout: one narrow column; each game is a row with its own small emblem */
 }
-[data-theme="dark"] { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); }
+[data-theme="dark"] { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); --track: rgba(244,239,231,.2); --track-on: #b9824f; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); }
+  :root:not([data-theme]) { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); --track: rgba(244,239,231,.2); --track-on: #b9824f; }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -48,6 +50,14 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 .top a { text-decoration: none; color: var(--muted); }
 .top a:hover { color: var(--text); }
 .top .brand { color: var(--text); font-weight: 600; }
+.top-right { display: flex; align-items: center; gap: 20px; }
+.theme-switch { appearance: none; border: 0; background: none; color: var(--muted); font: inherit; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 0; }
+.theme-switch:hover { color: var(--text); }
+.theme-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.theme-switch .track { width: 34px; height: 19px; border-radius: 10px; background: var(--track); position: relative; transition: background .2s; }
+.theme-switch .knob { position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .2s; }
+.theme-switch[aria-checked="true"] .track { background: var(--track-on); }
+.theme-switch[aria-checked="true"] .knob { transform: translateX(15px); }
 main { max-width: 760px; margin: 0 auto; padding: 56px 20px 80px; }
 h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.15rem, 4.1vw, 3.35rem); line-height: 1.05; letter-spacing: -0.01em; margin: 0 0 14px; text-wrap: balance; }
 .lede { color: var(--muted); max-width: 54ch; margin: 0 0 44px; font-size: 1.05rem; }
@@ -69,13 +79,13 @@ h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.15rem, 4.1v
   .go { display: none; }
   main { padding-top: 40px; }
 }
-@media (prefers-reduced-motion: reduce) { .go, .game h2 { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .go, .game h2, .theme-switch .track, .theme-switch .knob { transition: none; } }
 </style>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/">Deniz Buldum</a>
-    <a href="/">Home</a>
+    <span class="top-right"><a href="/">Home</a><button class="theme-switch" id="themeSwitch" type="button" role="switch" aria-checked="false"><span class="track" aria-hidden="true"><span class="knob"></span></span>Dark mode</button></span>
   </header>
   <main>
     <h1>Games</h1>
@@ -108,5 +118,25 @@ h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.15rem, 4.1v
     </ul>
     <p class="note">Your scores and streaks are saved in your browser.</p>
   </main>
+<script>
+/* Light/dark switch shared across denizbuldum.org (same key as the main site) */
+const Theme = (() => {
+  const KEY = 'deniz-theme';
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const listeners = [];
+  const stored = () => { try { const t = localStorage.getItem(KEY); return t === 'light' || t === 'dark' ? t : null; } catch (e) { return null; } };
+  const current = () => document.documentElement.dataset.theme || stored() || (mq && mq.matches ? 'dark' : 'light');
+  function apply(t) { document.documentElement.dataset.theme = t; document.documentElement.style.colorScheme = t; listeners.forEach((f) => f(t)); }
+  function mount(btn) {
+    const render = () => btn.setAttribute('aria-checked', current() === 'dark' ? 'true' : 'false');
+    btn.addEventListener('click', () => { const t = current() === 'dark' ? 'light' : 'dark'; try { localStorage.setItem(KEY, t); } catch (e) { /* storage unavailable */ } apply(t); render(); });
+    if (mq && mq.addEventListener) mq.addEventListener('change', () => { if (!stored()) { listeners.forEach((f) => f(current())); render(); } });
+    new MutationObserver(() => { render(); listeners.forEach((f) => f(current())); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    render();
+  }
+  return { mount, current, onChange: (f) => listeners.push(f) };
+})();
+Theme.mount(document.getElementById('themeSwitch'));
+</script>
 </body>
 </html>
