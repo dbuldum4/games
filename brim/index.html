@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(()=>{try{const t=localStorage.getItem('brim-theme');if(t==='light'||t==='dark')document.documentElement.dataset.brim=t;}catch(e){}})();</script>
 <title>Brim</title>
 <meta name="description" content="Fill the glass with countries without spilling. Pour up to three countries by land area and get as close to the brim as you can.">
 <link rel="canonical" href="https://denizbuldum.org/games/brim/">
@@ -38,8 +39,19 @@
   --sky: #9fd3ff;
   --display: 'Unbounded', 'Arial Black', system-ui, sans-serif;
   --body: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+  --field-edge: transparent;
   /* layout: the glass stands in the middle of the page; readouts beside it, the pour box below */
   color-scheme: dark;
+}
+/* Light: pale periwinkle counter, cobalt glass */
+:root[data-brim="light"] {
+  --bg: #eef2ff; --bg-deep: #dde4fb; --text: #0f1857; --soft: #4a5590; --glass: #2140c4; --glass-fill: rgba(33, 64, 196, 0.05);
+  --score: #2140c4; --alert: #b4330f; --focus: #2140c4; --field-edge: #c3cbef; color-scheme: light;
+}
+/* Dark: midnight navy, same jewel-tone layers */
+:root[data-brim="dark"] {
+  --bg: #0c1238; --bg-deep: #161e52; --text: #ffffff; --soft: #aab4e6; --glass: #e6eaff; --glass-fill: rgba(255, 255, 255, 0.05);
+  --score: #ffd23f; --alert: #ffd23f; --focus: #ffd23f; --field-edge: transparent; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
@@ -81,7 +93,7 @@ header { display: flex; justify-content: space-between; align-items: center; gap
 .pours li span:last-child { grid-column: 2; color: var(--soft); font-variant-numeric: tabular-nums; font-weight: 400; font-size: 15px; }
 
 form.entry { position: relative; display: flex; gap: 10px; }
-.entry input { flex: 1; min-width: 0; padding: 13px 16px; border: 0; border-radius: 14px; background: var(--white); color: var(--ink); font-size: 20px; font-weight: 600; }
+.entry input { flex: 1; min-width: 0; padding: 13px 16px; border: 0; box-shadow: inset 0 0 0 2px var(--field-edge); border-radius: 14px; background: var(--white); color: var(--ink); font-size: 20px; font-weight: 600; }
 .entry input:focus-visible { outline: 4px solid var(--lemon); outline-offset: 2px; }
 .btn { appearance: none; border: 0; border-radius: 14px; background: var(--lemon); color: var(--ink); font-family: var(--display); font-weight: 700; font-size: 17px; padding: 13px 20px; cursor: pointer; box-shadow: 0 4px 0 #c79c00; }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #c79c00; }
@@ -96,7 +108,7 @@ form.entry { position: relative; display: flex; gap: 10px; }
 .ask { margin: 0; font-weight: 600; }
 .ask small { display: block; color: var(--soft); font-weight: 400; font-size: 16px; }
 
-.card { background: var(--white); color: var(--ink); border-radius: 18px; padding: 16px 18px; display: grid; gap: 8px; }
+.card { background: var(--white); color: var(--ink); box-shadow: 0 0 0 2px var(--field-edge); border-radius: 18px; padding: 16px 18px; display: grid; gap: 8px; }
 .card h2 { margin: 0; font-family: var(--display); font-size: 22px; line-height: 1.15; }
 .card p { margin: 0; color: #3b4580; }
 .card p b { color: var(--ink); }
@@ -115,7 +127,7 @@ form.entry { position: relative; display: flex; gap: 10px; }
 .board .t { color: var(--soft); font-size: 15px; }
 .board .g { font-weight: 800; overflow-wrap: anywhere; }
 .board .p { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-family: var(--display); font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; }
-pre.share { margin: 0; padding: 12px 14px; background: var(--bg-deep); border-radius: 14px; font-family: var(--body); font-size: 18px; white-space: pre-wrap; }
+pre.share { margin: 0; padding: 12px 14px; background: var(--bg-deep); color: var(--text); border-radius: 14px; font-family: var(--body); font-size: 18px; white-space: pre-wrap; }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
 .stats div { background: var(--bg-deep); border-radius: 14px; padding: 10px 4px; }
 .stats b { display: block; font-family: var(--display); font-size: 20px; font-variant-numeric: tabular-nums; }
@@ -129,15 +141,20 @@ pre.share { margin: 0; padding: 12px 14px; background: var(--bg-deep); border-ra
 .row .btn { flex: 1; }
 @media (max-width: 420px) { .glass-wrap { width: 132px; height: 280px; } .bench { gap: 16px; } .mark { font-size: 34px; } .intro h1 { font-size: 31px; } }
 @media (prefers-reduced-motion: reduce) { .layer { transition: none; } .spill.on::before, .spill.on::after { animation: none; } }
-.topbar { display: flex; gap: 16px; font-size: 15px; margin-bottom: -6px; }
-.topbar:empty { display: none; }
-.topbar a { color: var(--soft); text-decoration: none; }
-.topbar a:hover { color: var(--text); text-decoration: underline; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 15px; margin-bottom: -6px; }
+.topbar-links { display: flex; gap: 16px; }
+.topbar-links a { color: var(--soft); text-decoration: none; }
+.topbar-links a:hover { color: var(--text); text-decoration: underline; }
+.modes { display: inline-flex; margin-left: auto; padding: 3px; gap: 2px; border-radius: 999px; background: var(--bg-deep); }
+.modes button { appearance: none; border: 0; background: transparent; color: var(--soft); font: inherit; font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px; cursor: pointer; }
+.modes button:hover { color: var(--text); }
+.modes button[aria-checked="true"] { background: var(--glass); color: var(--bg); }
+.modes button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <nav class="topbar" aria-label="Page"><a href="../">‹ All games</a><a href="/">denizbuldum.org</a></nav>
+  <div class="topbar"><nav class="topbar-links" aria-label="Page"><a href="../">‹ All games</a><a href="/">denizbuldum.org</a></nav><div class="modes" id="modes" role="radiogroup" aria-label="Color mode"><button type="button" role="radio" data-mode="blue">Blue</button><button type="button" role="radio" data-mode="light">Light</button><button type="button" role="radio" data-mode="dark">Dark</button></div></div>
   <header>
     <div class="mark">Brim<span>.</span></div>
     <div class="meta"><b id="scoreTop">0</b><span id="dayLabel"></span></div>
@@ -456,6 +473,18 @@ function renderFinal() {
   Daily.startCountdown($('countdown'));
 }
 
+/* ---------- color mode: blue (default), light, dark ---------- */
+(() => {
+  const btns = [...document.querySelectorAll('#modes button')];
+  const cur = () => document.documentElement.dataset.brim || 'blue';
+  const render = () => btns.forEach((b) => { const on = b.dataset.mode === cur(); b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+  const set = (m) => { if (m === 'blue') delete document.documentElement.dataset.brim; else document.documentElement.dataset.brim = m; try { localStorage.setItem('brim-theme', m); } catch (e) { /* storage unavailable */ } render(); };
+  btns.forEach((b, i) => {
+    b.addEventListener('click', () => set(b.dataset.mode));
+    b.addEventListener('keydown', (e) => { const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); const n = btns[(i + d + btns.length) % btns.length]; set(n.dataset.mode); n.focus(); });
+  });
+  render();
+})();
 /* ---------- boot ---------- */
 $('dayLabel').textContent = `No. ${day}, ${Daily.dateLabel()}`;
 updateTop();
