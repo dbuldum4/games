@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Games | Deniz Buldum</title>
+<meta name="description" content="Small daily games by Deniz Buldum. A new puzzle every day at midnight Eastern.">
+<link rel="canonical" href="https://denizbuldum.org/games/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Games by Deniz Buldum">
+<meta property="og:description" content="Small daily games. A new puzzle every day at midnight Eastern.">
+<meta property="og:url" content="https://denizbuldum.org/games/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23765640'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='18' fill='%23f5f0e6'%3Eg%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,700&display=swap" rel="stylesheet">
+<script>
+  (() => { try { const t = localStorage.getItem('deniz-theme'); if (t === 'light' || t === 'dark') { document.documentElement.dataset.theme = t; document.documentElement.style.colorScheme = t; } } catch { /* storage unavailable */ } })();
+</script>
+<style>
+:root {
+  /* Matches denizbuldum.org: warm paper, ink, walnut accent, Newsreader + Instrument Sans */
+  color-scheme: light;
+  --bg: #f5f0e6;
+  --bg-soft: #f9f5ee;
+  --text: #1f1b17;
+  --muted: #5d544b;
+  --accent: #765640;
+  --line: rgba(31, 27, 23, 0.14);
+  --line-strong: rgba(31, 27, 23, 0.26);
+  --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", serif;
+  --sans: "Instrument Sans", "Avenir Next", "Segoe UI", sans-serif;
+  /* layout: one narrow column; each game is a row with its own small emblem */
+}
+[data-theme="dark"] { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { color-scheme: dark; --bg: #15110f; --bg-soft: #211a16; --text: #f4efe7; --muted: #bcb0a2; --accent: #d7a46f; --line: rgba(244,239,231,.15); --line-strong: rgba(244,239,231,.3); }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 1rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+::selection { background: rgba(118, 86, 64, 0.18); }
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.top { max-width: 760px; margin: 0 auto; padding: 22px 20px; display: flex; justify-content: space-between; align-items: center; font-size: .9rem; border-bottom: 1px solid var(--line); }
+.top a { text-decoration: none; color: var(--muted); }
+.top a:hover { color: var(--text); }
+.top .brand { color: var(--text); font-weight: 600; }
+main { max-width: 760px; margin: 0 auto; padding: 56px 20px 80px; }
+h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.15rem, 4.1vw, 3.35rem); line-height: 1.05; letter-spacing: -0.01em; margin: 0 0 14px; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 54ch; margin: 0 0 44px; font-size: 1.05rem; }
+.games { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-strong); }
+.game { border-bottom: 1px solid var(--line); }
+.game a { display: grid; grid-template-columns: 132px 1fr auto; gap: 24px; align-items: center; padding: 26px 0; text-decoration: none; }
+.game a:hover h2 { color: var(--accent); }
+.game a:hover .go { transform: translateX(3px); color: var(--accent); }
+.emblem { width: 132px; height: 72px; display: grid; place-items: center; }
+.emblem svg { width: 100%; height: 100%; }
+.game h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.32rem, 2.1vw, 1.78rem); line-height: 1.1; margin: 0 0 4px; transition: color .15s; }
+.game p { margin: 0; color: var(--muted); max-width: 46ch; }
+.game .rule { color: var(--text); }
+.go { font-size: 1.4rem; color: var(--muted); transition: transform .15s, color .15s; }
+.note { margin-top: 36px; color: var(--muted); font-size: .9rem; }
+@media (max-width: 560px) {
+  .game a { grid-template-columns: 88px 1fr; gap: 16px; }
+  .emblem { width: 88px; height: 48px; }
+  .go { display: none; }
+  main { padding-top: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { .go, .game h2 { transition: none; } }
+</style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">Deniz Buldum</a>
+    <a href="/">Home</a>
+  </header>
+  <main>
+    <h1>Games</h1>
+    <p class="lede">Small daily puzzles. Everyone gets the same one, it resets at midnight Eastern, and each takes a few minutes.</p>
+    <ul class="games">
+      <li class="game">
+        <a href="plates/">
+          <span class="emblem" aria-hidden="true">
+            <svg viewBox="0 0 132 72"><rect x="4" y="4" width="124" height="64" rx="10" fill="#fbfbf6" stroke="#1d2a5b" stroke-width="3"/><circle cx="34" cy="14" r="3" fill="#a4abb4"/><circle cx="98" cy="14" r="3" fill="#a4abb4"/><text x="66" y="52" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="30" letter-spacing="4" fill="#1d2a5b">RNB</text></svg>
+          </span>
+          <span>
+            <h2>Plates</h2>
+            <p><span class="rule">Make a word from the license plate.</span> Use its three letters in order. The rarer the word, the farther you drive.</p>
+          </span>
+          <span class="go" aria-hidden="true">›</span>
+        </a>
+      </li>
+      <li class="game">
+        <a href="halfway/">
+          <span class="emblem" aria-hidden="true">
+            <svg viewBox="0 0 132 72"><path d="M12 60 Q66 -14 120 60" fill="none" stroke="#b0127a" stroke-width="3.5" stroke-dasharray="7 6"/><circle cx="12" cy="60" r="7" fill="#1f5f99"/><circle cx="120" cy="60" r="7" fill="#1f5f99"/><circle cx="66" cy="23" r="9" fill="none" stroke="#b0127a" stroke-width="3"/><circle cx="66" cy="23" r="3.5" fill="#b0127a"/></svg>
+          </span>
+          <span>
+            <h2>Halfway</h2>
+            <p><span class="rule">Name the city halfway between two others.</span> Five flights a day, scored by how close you land.</p>
+          </span>
+          <span class="go" aria-hidden="true">›</span>
+        </a>
+      </li>
+    </ul>
+    <p class="note">Your scores and streaks are saved in your browser.</p>
+  </main>
+</body>
+</html>
